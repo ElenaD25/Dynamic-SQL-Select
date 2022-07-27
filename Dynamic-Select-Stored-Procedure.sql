@@ -48,4 +48,4 @@ set @qry = @qry + ' where ' + trim(@column_n) + ' = trim(@vals)'
 			select error_message() as message
 		end catch
 
-end
+end 
