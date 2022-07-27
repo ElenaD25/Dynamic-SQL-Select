@@ -1,3 +1,4 @@
+ALTER proc SP_Dynamic_Select
 @schema_name nvarchar(100), @table nvarchar(200), @column_n nvarchar(300), @value nvarchar(max)
 	as 
 		begin
@@ -6,7 +7,7 @@
 			@condition_test nvarchar(1000),
 			@qry nvarchar(max) = N'select ',
 			@FirstRow int = 1,
-			@key varchar(max), 
+			@key varchar(max), s
 			@val varchar(max),
 			@type varchar(max),
 			@column varchar(max)
@@ -48,4 +49,4 @@ set @qry = @qry + ' where ' + trim(@column_n) + ' = trim(@vals)'
 			select error_message() as message
 		end catch
 
-end
+end 

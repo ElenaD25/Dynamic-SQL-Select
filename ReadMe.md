@@ -11,7 +11,7 @@ This stored procedure helps to retrieve the records from a table without writing
 - in the end i execute the @qry variable which contains the select statement
 
 ## Execution syntax
-exec Json_Select @schema_name = 'your schema name', @table='your table name', @condition = 'your condition' (based on this you'll retrieve specific records)
+exec SP_Dynamic_Select @schema_name = 'your schema name', @table='your table name', @column_n = 'your column name', @value = 'your value'(based on this you'll retrieve specific records)
 
 
 !! This stored procedure can only be used if you want to retrieve all the columns in a table !!
