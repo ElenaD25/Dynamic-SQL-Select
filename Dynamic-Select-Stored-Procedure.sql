@@ -1,9 +1,10 @@
-ALTER proc SP_Dynamic_Select
-@schema_name varchar(100), @table varchar(200), @condition varchar(max)
+@schema_name nvarchar(100), @table nvarchar(200), @column_n nvarchar(300), @value nvarchar(max)
 	as 
 		begin
 			declare
-			@qry varchar(max) = 'select ',
+			@params nvarchar(max) , 
+			@condition_test nvarchar(1000),
+			@qry nvarchar(max) = N'select ',
 			@FirstRow int = 1,
 			@key varchar(max), 
 			@val varchar(max),
@@ -27,7 +28,7 @@ ALTER proc SP_Dynamic_Select
 				begin 
 					if @FirstRow = 0
 						set @qry= @qry + ', '
-						set @qry =@qry + @column
+						set @qry =@qry + trim(@column)
 						set @FirstRow = 0
 					fetch next from db_cursor into @column
 				end
@@ -36,9 +37,12 @@ ALTER proc SP_Dynamic_Select
 		close db_cursor
 		deallocate db_cursor
 
-set @qry = @qry + ' from [' + @schema_name + '].[' + @table +'] where ' + @condition
-exec (@qry)
---print(@qry)
+set @params= N'@vals nvarchar(1000)'
+set @qry = @qry + ' from '+ quotename(trim(@schema_name)) + '.' + quotename(trim(@table))
+set @qry = @qry + ' where ' + trim(@column_n) + ' = trim(@vals)'
+
+	exec sp_executesql @qry, @params, @vals = @value
+
 	end try
 		begin catch
 			select error_message() as message
