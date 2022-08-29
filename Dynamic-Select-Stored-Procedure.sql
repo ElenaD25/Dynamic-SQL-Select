@@ -7,10 +7,13 @@ ALTER proc SP_Dynamic_Select
 			@condition_test nvarchar(1000),
 			@qry nvarchar(max) = N'select ',
 			@FirstRow int = 1,
-			@key varchar(max), s
+			@key varchar(max), 
 			@val varchar(max),
 			@type varchar(max),
-			@column varchar(max)
+			@column varchar(max),
+			@ErrorMessage nvarchar(4000),
+			@ErrorSeverity int,
+			@ErrorState int;
 			
 		begin try 
 			if(@schema_name is null or @schema_name = '')
@@ -43,10 +46,17 @@ set @qry = @qry + ' from '+ quotename(trim(@schema_name)) + '.' + quotename(trim
 set @qry = @qry + ' where ' + trim(@column_n) + ' = trim(@vals)'
 
 	exec sp_executesql @qry, @params, @vals = @value
-
+	--print(@qry)
 	end try
 		begin catch
-			select error_message() as message
+			  SELECT 
+					@ErrorMessage = ERROR_MESSAGE(), 
+					@ErrorSeverity = ERROR_SEVERITY(), 
+					@ErrorState = ERROR_STATE();
+
+		   RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
 		end catch
 
-end 
+end
+
